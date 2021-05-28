@@ -1,0 +1,7 @@
+@import 'shared';
+
+.add-btn {
+    @include button();
+    padding: var(--page-spacing) calc(var(--page-spacing) * 3);
+    // margin-top: calc(var(--page-spacing) * 4);
+  }

@@ -1,0 +1,175 @@
+<div class="">
+
+
+    <div>
+        <mat-grid-list cols="5" rowHeight="100px">
+            <mat-grid-tile>
+                <mat-form-field appearance="fill">
+                    <mat-label>Show/Hide Columns</mat-label>
+                    <mat-select multiple [(ngModel)]="selectedColumns">
+                        <mat-option *ngFor="let a of sampleResponse.displayHeader;let i=index" [value]="a.name"
+                            (click)="columnOpearation(i)">
+                            <div>{{a.displayName}}</div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+
+
+            <mat-grid-tile>
+                <mat-form-field appearance="fill">
+                    <mat-label>Freeze</mat-label>
+                    <mat-select multiple [(ngModel)]="freezeArray">
+                        <mat-option *ngFor="let a of displayedColumns;let i=index" [value]="a"
+                            (click)="columnOpearationFreeze($event)">
+                            <div>{{a}}</div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+        <mat-grid-list cols="5" rowHeight="100px">
+            <mat-grid-tile>
+                <mat-form-field appearance="fill">
+                    <mat-label>Multi Filters</mat-label>
+                    <mat-select multiple>
+                        <mat-option *ngFor="let a of sampleResponse.displayHeader;let i=index" [value]="a.name"
+                            (click)="addMultiFields(a)">
+                            <div>{{a.displayName}}</div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+        <form [formGroup]="poForm">
+            <mat-grid-list cols="5" rowHeight="100px" formArrayName="items"
+                *ngFor="let item of getControls(); let i = index">
+                <div [formGroupName]="i">
+                    <mat-grid-tile>
+
+                        <div>{{poForm.value.items[i].m_displyKey}}</div>
+
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill">
+                            <mat-label> Types</mat-label>
+                            <mat-select formControlName='m_selSearchName'>
+                                <mat-option *ngFor="let search of poForm.value.items[i].m_searchArray"
+                                    [value]="search.searchType" (click)="multiSelectedSearchType(search,i)">
+                                    {{search.searchType}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+
+                        <div *ngIf="poForm.value.items[i].m_selSearchName">
+                            <div
+                                *ngIf="poForm.value.items[i].m_selSearchName!='between'&&poForm.value.items[i].m_searchFieldType!=='date'">
+                                <mat-form-field class="example-form-field" appearance="outline">
+                                    <input matInput [type]="poForm.value.items[i].m_searchFieldType"
+                                        formControlName="m_searchInputValue" placeholder="Enter here...">
+                                </mat-form-field>
+                            </div>
+
+                            <div
+                                *ngIf="poForm.value.items[i].m_selSearchName=='between'&&poForm.value.items[i].m_searchFieldType!=='date'">
+                                <mat-form-field class="example-form-field" appearance="outline">
+                                    <mat-label>From</mat-label>
+                                    <input matInput [type]="poForm.value.items[i].m_searchFieldType"
+                                        formControlName="m_searchInputFromValue" placeholder="Enter here...">
+                                </mat-form-field>
+
+                                <mat-form-field class="example-form-field" appearance="outline">
+                                    <mat-label>To</mat-label>
+                                    <input matInput [type]="poForm.value.items[i].m_searchFieldType"
+                                        formControlName="m_searchInputToValue" placeholder="Enter here...">
+                                </mat-form-field>
+                            </div>
+                            <div
+                                *ngIf="poForm.value.items[i].m_selSearchName!='between'&&poForm.value.items[i].m_searchFieldType=='date'">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Date(m/d/y)</mat-label>
+                                    <input matInput [matDatepicker]="picker" formControlName="m_wholeDate">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div
+                                *ngIf="poForm.value.items[i].m_selSearchName=='between'&&poForm.value.items[i].m_searchFieldType=='date'">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>From Date((m/d/y)</mat-label>
+                                    <input matInput [matDatepicker]="picker" formControlName="m_startDate">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                                <br>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>To Date((m/d/y)</mat-label>
+                                    <input matInput [matDatepicker]="picker1" formControlName="m_endDate">
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-grid-tile>
+                </div>
+            </mat-grid-list>
+            <mat-grid-list cols="5" rowHeight="100px">
+                <mat-grid-tile *ngIf="getControls().length">
+                    <button mat-raised-button color="primary" (click)="fetchDataByMultiFiltered()">Submit</button>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </form>
+    </div>
+
+    <table>
+        <div class="example-container mat-elevation-z8">
+            <mat-table #table [dataSource]="dataSource" cdkDropList cdkDropListLockAxis="x"
+                cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)" matSort class="mat-table">
+                <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns;let i=index"
+                    [sticky]="isSticky(column)">
+                    <mat-header-cell *matHeaderCellDef cdkDrag (cdkDragStarted)="dragStarted($event, i)"
+                        [cdkDragData]="{name: column, columIndex: i}" mat-sort-header class="mat-header-cell" style="text-transform: capitalize;background: #fff;padding-top: 10px;padding-bottom: 10px;
+                    color: white; font-size: 15px;" [style.color]="column=='criticality'||column=='warrantyExpiry'?'red':'#3272d9'">
+                        {{column}} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"
+                        [style.background-color]="element['criticality']==3?'bisque': element['criticality']==2?'aliceblue':'lightyellow'">
+                        {{element[column]}} </mat-cell>
+                </ng-container>
+                <mat-header-row class="mat-header-row" *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+            <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]">
+            </mat-paginator>
+        </div>
+    </table>
+    <br><br>
+    <!-- <div class="mat-elevation-z8" *ngIf="displayedColumns">
+        <div style="margin-left: 20px;">
+            <mat-form-field class="example-form-field" appearance="outline" style="width: 75%;padding-top: 20px;">
+                <mat-label>Search</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+            </mat-form-field>
+        </div>
+
+        <table mat-table [dataSource]="dataSource" matSort class="mat-table">
+            <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+                <th mat-header-cell class="mat-header-cell" *matHeaderCellDef mat-sort-header style="text-transform: capitalize;background: #ba9e4d;
+                color: white;" [style.color]="column=='criticality'||column=='warrantyExpiry'?'red':'white'">
+                    {{column}}
+                </th>
+                <td mat-cell *matCellDef="let element"
+                    [style.background-color]="element['criticality']==3?'bisque': element['criticality']==2?'aliceblue':'lightyellow'">
+                    {{element[column]}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="mat-header-row"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div> -->
+    <br>
+</div>

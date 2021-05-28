@@ -1,0 +1,16 @@
+<div *ngIf="data" class="modal-popup">
+    <div>
+        <h1 mat-dialog-title>{{ data?.title }}</h1>
+        <div mat-dialog-content>
+            <p>{{ data?.message }}</p>
+        </div>
+        <div mat-dialog-actions>
+            <button *ngIf="!data?.hideCancelBtn" mat-button (click)="onNoClick()">
+                Cancel
+            </button>
+            <button mat-raised-button color="primary" (click)="onOkClick()">
+                Ok
+            </button>
+        </div>
+    </div>
+</div>

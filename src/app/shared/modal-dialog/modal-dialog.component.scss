@@ -1,0 +1,10 @@
+.cdk-overlay-pane {    
+    height: 250px;
+    width: 500px;
+}
+
+@media only screen and (max-width: 600px) {
+    .cdk-overlay-pane {
+        height: auto !important;
+    }
+}
