@@ -136,7 +136,7 @@
                     color: white; font-size: 15px;" [style.color]="column=='criticality'||column=='warrantyExpiry'?'red':'#3272d9'">
                         {{column}} </mat-header-cell>
                     <mat-cell *matCellDef="let element"
-                        [style.background-color]="element['criticality']==3?'bisque': element['criticality']==2?'aliceblue':'lightyellow'">
+                        [style.background-color]="element['criticality']==3?'bisque': element['criticality']==2?'aliceblue':'transparent'">
                         {{element[column]}} </mat-cell>
                 </ng-container>
                 <mat-header-row class="mat-header-row" *matHeaderRowDef="displayedColumns"></mat-header-row>

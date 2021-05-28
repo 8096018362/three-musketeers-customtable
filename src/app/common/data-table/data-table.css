@@ -1,9 +1,10 @@
   .mat-table {
     color: #1a084c;
+    background-color: transparent;
     /* width:'100%'; */
     /* width:1024px; */
     width : 1280px;
-    height: 350px;
+    height: 341px;
     overflow: auto;
     overflow-x: scroll;
   }
@@ -22,6 +23,7 @@
   }
   .mat-header-cell{
     position: sticky;
+    background-color: var(--layout-background) !important;
   }
   .mat-header-row{
     margin: 0px;
@@ -37,6 +39,7 @@
     white-space: nowrap;
     overflow: hidden;
     vertical-align: middle;
+    
   }
   .mat-row,
   .mat-header-row {
@@ -54,4 +57,12 @@
 .mat-elevation-z8 {
   box-shadow : none !important;
   /* width: 215%; */
+}
+
+.mat-paginator {
+  background-color: transparent !important;
+}
+
+mat-footer-row, mat-header-row, mat-row {
+  border-style: hidden;
 }
