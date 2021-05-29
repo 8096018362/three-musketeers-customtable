@@ -139,8 +139,6 @@ export class TableComponent {
                 this.displayedColumns.push(element.name);
             }
         });
-
-        window.scrollTo(0, 0)
     }
 
     selectedSearchType(sObj: any) {
@@ -422,8 +420,6 @@ export class TableComponent {
         this.dataSource.data = this.sampleResponse.data;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        window.scrollTo(0, 0)
-
         // this.selname = "";
         // this.selfieldType = "";
 
