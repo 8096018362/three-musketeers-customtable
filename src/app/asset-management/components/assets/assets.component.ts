@@ -1,74 +1,52 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-  MatDialog
-} from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
-import { FormGroup } from '@angular/forms';
-import { DatePipe } from '@angular/common';
-import { IDropDown } from 'src/app/shared/interfaces/drop-down.interface';
-import { ValidationService } from 'src/app/shared/services/validation.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { DialogService } from 'src/app/shared/services/dialog.service';
-import { BaseComponent } from 'src/app/shared/utils/base.component';
-import { IAsset } from '../../interfaces/asset.interface';
-import { AssetService } from '../../services/asset.service';
-import { IAssetCategory } from '../../interfaces/asset-category.interface';
-import { Asset } from '../../models/asset.model';
-
-interface IAssetModalDialogData {
-  asset: IAsset;
-  assetCategories: Array<IDropDown>;
-}
-@Component({
-  templateUrl: 'asset.dialog.html',
-})
-// tslint:disable-next-line: component-class-suffix
-export class AssetDialog {
-  assetForm: FormGroup;
-  makes: IDropDown[];
-  ratings: IDropDown[];
-  criticalities: IDropDown[];
-  assetCategories: Array<IDropDown> = [];
-
- 
-
-  constructor(
-    public dialogRef: MatDialogRef<AssetDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: IAssetModalDialogData,
-    private validationService: ValidationService,
-    private assetService: AssetService,
-    private sharedService: SharedService) {
-    this.assetForm = this.assetService.buildAssetForm(data.asset);
-
-    this.assetCategories = data.assetCategories;
-    this.makes = this.sharedService.getYears();
-    this.ratings = this.sharedService.getRatings();
-    this.criticalities = this.sharedService.getCriticalities();
-  }
-
-  ok(): void {
-    if (this.assetForm.valid) {
-      this.dialogRef.close(this.assetForm.value);
-    } else {
-      this.validationService.validateForm(this.assetForm);
-    }
-  }
-
-  cancel(): void {
-    this.dialogRef.close();
-  }
-}
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-assets',
   templateUrl: './assets.component.html',
-  styleUrls: ['./assets.component.scss'],
-  providers: [DatePipe]
+  styleUrls: ['./assets.component.scss']
 })
-export class AssetsComponent extends BaseComponent implements OnInit {
-  assetCategories = [];
+export class AssetsComponent implements OnInit {
+  dataSource: any = new MatTableDataSource<any>([]);
+  originalData = [
+    { "pKey": 1, "assetUid": "ast128765", "customerId": 12345, "description": "hello123", "machineName": "caterpillar", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:10", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 2, "assetUid": "ast128766", "customerId": 12345, "description": "hello", "machineName": "JCB", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:51", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 3, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 5, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 5, "assetUid": "harshita", "customerId": 12345, "description": "123", "machineName": "harshitamachine", "make": "2020", "serialNumber": "string", "modelNumber": "string", "installedDate": "2019-06-30T04:33:24", "warrantyExpiry": "2019-06-30T04:33:24", "isActive": true, "location": "kondapur", "powerRating": "1", "supplier": "khandelwals", "category": 3, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 13, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 3, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 14, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 1, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 15, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab1", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 1, "assetUid": "ast128765", "customerId": 12345, "description": "hello123", "machineName": "caterpillar", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:10", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 2, "assetUid": "ast128766", "customerId": 12345, "description": "hello", "machineName": "JCB", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:51", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 3, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 5, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 5, "assetUid": "harshita", "customerId": 12345, "description": "123", "machineName": "harshitamachine", "make": "2020", "serialNumber": "string", "modelNumber": "string", "installedDate": "2019-06-30T04:33:24", "warrantyExpiry": "2019-06-30T04:33:24", "isActive": true, "location": "kondapur", "powerRating": "1", "supplier": "khandelwals", "category": 3, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 13, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 3, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 14, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 1, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 15, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab1", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 1, "assetUid": "ast128765", "customerId": 12345, "description": "hello123", "machineName": "caterpillar", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:10", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 2, "assetUid": "ast128766", "customerId": 12345, "description": "hello", "machineName": "JCB", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:51", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 3, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 5, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 5, "assetUid": "harshita", "customerId": 12345, "description": "123", "machineName": "harshitamachine", "make": "2020", "serialNumber": "string", "modelNumber": "string", "installedDate": "2019-06-30T04:33:24", "warrantyExpiry": "2019-06-30T04:33:24", "isActive": true, "location": "kondapur", "powerRating": "1", "supplier": "khandelwals", "category": 3, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 13, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 3, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 14, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 1, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 15, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab1", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 1, "assetUid": "ast128765", "customerId": 12345, "description": "hello123", "machineName": "caterpillar", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:10", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 2, "assetUid": "ast128766", "customerId": 12345, "description": "hello", "machineName": "JCB", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:51", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 3, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 5, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 5, "assetUid": "harshita", "customerId": 12345, "description": "123", "machineName": "harshitamachine", "make": "2020", "serialNumber": "string", "modelNumber": "string", "installedDate": "2019-06-30T04:33:24", "warrantyExpiry": "2019-06-30T04:33:24", "isActive": true, "location": "kondapur", "powerRating": "1", "supplier": "khandelwals", "category": 3, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 13, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 3, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 14, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 1, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 15, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab1", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 1, "assetUid": "ast128765", "customerId": 12345, "description": "hello123", "machineName": "caterpillar", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:10", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 2, "assetUid": "ast128766", "customerId": 12345, "description": "hello", "machineName": "JCB", "make": "2018", "serialNumber": "546yhgt9uy2", "modelNumber": "h343h8743h09j", "installedDate": "2019-06-02T16:59:51", "warrantyExpiry": "2021-12-25T10:30:50", "isActive": true, "location": "india", "powerRating": "2", "supplier": "TATA", "category": 1, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 3, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 5, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 5, "assetUid": "harshita", "customerId": 12345, "description": "123", "machineName": "harshitamachine", "make": "2020", "serialNumber": "string", "modelNumber": "string", "installedDate": "2019-06-30T04:33:24", "warrantyExpiry": "2019-06-30T04:33:24", "isActive": true, "location": "kondapur", "powerRating": "1", "supplier": "khandelwals", "category": 3, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 13, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 3, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 14, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 1, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }, { "pKey": 15, "assetUid": "jeet321", "customerId": 12345, "description": "this is an asset", "machineName": "JCB", "make": "2020", "serialNumber": "jjh76576", "modelNumber": "sdvdf4343", "installedDate": "2019-06-09T14:06:58", "warrantyExpiry": "2019-06-09T14:06:58", "isActive": true, "location": "Punjab1", "powerRating": "3", "supplier": "board manufacturer", "category": 2, "criticality": 2, "createdDate": "0001-01-01T00:00:00", "updatedDate": "0001-01-01T00:00:00" }
+  ]
+
+  @ViewChild(MatPaginator, { static: false })
+  paginator!: MatPaginator;
+
+  @ViewChild(MatSort, { static: false })
+  sort!: MatSort;
+
+  displayedColumns = [
+    { value: 'machineName', header: 'Machine Name' },
+    { value: 'description', header: 'Description' },
+    { value: 'make', header: 'Make' },
+    { value: 'serialNumber', header: 'serialNumber' },
+    { value: 'modelNumber', header: 'modelNumber' },
+    { value: 'installedDate', header: 'installedDate' },
+    { value: 'warrantyExpiry', header: 'warrantyExpiry' },
+    { value: 'location', header: 'location' },
+    { value: 'powerRating', header: 'powerRating' },
+    { value: 'supplier', header: 'supplier' },
+    { value: 'category', header: 'category' },
+    { value: 'criticality', header: 'criticality' },
+    { value: 'pKey', header: 'pKey' }
+  ];
+  columnsToDisplay = [];
+
+
+  ngOnInit() {
+    setTimeout(() => {
+      this.dataSource.data = this.originalData;
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.columnsToDisplay = this.displayedColumns.map(x => x.value);
+    }, 1000)
+  }
+
 
   public sampleResponse: any = {
     displayHeader: [{
@@ -607,107 +585,5 @@ export class AssetsComponent extends BaseComponent implements OnInit {
     ]
   }
 
-  constructor(
-    datePipe: DatePipe,
-    private assetService: AssetService,
-    dialogService: DialogService,
-    private route: ActivatedRoute,
-    private dialog: MatDialog) {
-    super(assetService, dialogService, datePipe);
-    this.originalData = route.snapshot.data.assets || [];
 
-    const assetCategories = this.route.snapshot.data.assetCategories as Array<IAssetCategory>;
-    if (assetCategories) {
-      assetCategories.forEach((c) => {
-        this.assetCategories.push({ text: c.categoryName, value: c.pKey });
-      });
-    }
-
-    this.displayedColumns = [
-      'machineName',
-      'description',
-      'make',
-      'serialNumber',
-      'modelNumber',
-      'installedDate',
-      'warrantyExpiry',
-      'location',
-      'powerRating',
-      'supplier',
-      'category',
-      'criticality',
-      'pkey'
-    ];
-  }
-
-  ngOnInit() {
-    this.init(this.originalData);
-  }
-
-  getCategory(id: string): string {
-    // return this.assetCategories?.find((c) => c.value === id)?.text || '';
-    return id;
-  }
-
-  getCriticality(criticality: number): string {
-    let color = null;
-    switch (criticality) {
-      case 1:
-        color = 'High';
-        break;
-      case 2:
-        color = 'Meduim';
-        break;
-      case 3:
-        color = 'Low';
-        break;
-
-      default:
-        break;
-    }
-    return color;
-  }
-
-  getColor(criticality: number): string {
-    let color = null;
-    switch (criticality) {
-      case 1:
-        color = 'red';
-        break;
-      case 2:
-        color = 'orange';
-        break;
-      case 3:
-        color = 'green';
-        break;
-
-      default:
-        break;
-    }
-    return color;
-  }
-
-  public add(): void {
-    this.openModal(new Asset());
-  }
-
-  public edit(asset: IAsset): void {
-    this.openModal(asset);
-  }
-
-  public openModal(a: IAsset): void {
-    if (a) {
-      const dialogRef = this.dialog.open(AssetDialog, {
-        disableClose: true,
-        width: '600px',
-        data: { asset: a, assetCategories: this.assetCategories }
-      });
-
-      dialogRef.afterClosed().subscribe((asset: IAsset) => {
-        if (asset) {
-          this.addOrUpdate(asset);
-        }
-      });
-    }
-  }
 }

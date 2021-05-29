@@ -9,12 +9,18 @@ import { CdkDragStart, CdkDropList, moveItemInArray, CdkDragDrop } from '@angula
 @Component({
     selector: 'rmdatatable',
     templateUrl: './data-table.html',
-    styleUrls: ['./data-table.css']
+    styleUrls: ['./data-table.scss']
 })
 export class TableComponent {
 
-
+    @Input() sampleResponse: any = {};
     public poForm: FormGroup;
+
+    @ViewChild(MatPaginator, { static: false })
+    paginator!: MatPaginator;
+
+    @ViewChild(MatSort, { static: false })
+    sort!: MatSort;
 
     constructor(
         private readonly fb: FormBuilder
@@ -22,12 +28,13 @@ export class TableComponent {
         this.poForm = new FormGroup({
             'items': new FormArray([])
         });
-        // this.onAddItem()
     }
 
 
+    ngOnInit() {
 
-    @Input() sampleResponse: any = {};
+    }
+
 
     searchInputToValue: any = '';
     searchInputFromValue: any = '';
@@ -81,11 +88,7 @@ export class TableComponent {
     displayedColumns: any = [];
     dataSource: any = new MatTableDataSource<any>([]);
 
-    @ViewChild(MatPaginator, { static: false })
-    paginator!: MatPaginator;
 
-    @ViewChild(MatSort, { static: false })
-    sort!: MatSort;
 
     ngAfterViewInit() {
         this.sampleResponse.displayHeader.map((col: any) => {
@@ -101,9 +104,6 @@ export class TableComponent {
         }, 1000);
     }
 
-    ngOnInit() {
-
-    }
 
     previousIndex!: number;
 
@@ -500,113 +500,3 @@ export class TableComponent {
     }
 
 }
-
-
-
-// export class AddPOComponent {
-//     ngOnInit() {
-//         this.poForm = new FormGroup({
-//             'poInfo': new FormGroup({
-//                 'vendorName': new FormControl(null, Validators.required),
-//                 'purchageNumber': new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(30)])),
-//             }),
-//             'items': new FormArray([])
-//         });
-//         this.getAllVendors(); 
-
-//     }
-
-
-//     createItem() {
-//         return new FormGroup({
-//             'itemName': new FormControl(null, Validators.required),
-//             'quantity': new FormControl(null, [Validators.required, Validators.pattern('^([1-9][0-9]{0,4})$')]),
-//             'skuCode': new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(30)])),
-//         })
-//     }
-
-
-
-//     itemDetails: any = [];
-//     itemsAddStatus = false;
-//     onAddItem() {
-//         this.itemsAddStatus = true;
-//         (this.poForm.get('items') as FormArray).push(this.createItem());
-//     }
-
-//     onDeleteItem(index) {
-//         (this.poForm.get('items') as FormArray).removeAt(index);
-//         if (this.poForm.get('items').value.length === 0) {
-//             this.itemsAddStatus = false;
-//         }
-//     }
-
-//     skuCodeErrorMsg;
-//     getProductName(index) {
-//         let skuCheckingStatus = true
-//         const formObj: any = this.poForm.get('items') as FormArray;
-//         formObj.controls[index].get('itemName').setValue('')
-//         if (index) {
-//             for (let i = 0; i < this.poForm.get('items').value.length; i++) {
-//                 if (this.poForm.value.items[index].skuCode === this.poForm.value.items[i].skuCode && i !== index) {
-//                     skuCheckingStatus = false;
-//                     this.errorAlertMessages = "SKU Already exists";
-//                     setTimeout(() => {
-//                         this.errorAlertMessages = '';
-//                         formObj.controls[index].get('skuCode').setValue('')
-//                     }, 1000)
-//                 }
-//             }
-//         }
-
-//         if (skuCheckingStatus && this.poForm.value.items[index].skuCode) {
-//             this.poService.getSKUdetails(this.poForm.value.items[index].skuCode).subscribe((data) => {
-//                 if (data.data != null) {
-//                     skuCheckingStatus = false;
-//                     formObj.controls[index].get('itemName').setValue(data.data.inventory.productName)
-//                     // formObj.controls[index].get('itemName').setValue('data.data.productName')
-//                 } else {
-//                     this.errorAlertMessages = data.error.message;
-//                     setTimeout(() => {
-//                         this.errorAlertMessages = '';
-//                         formObj.controls[index].get('skuCode').setValue('')
-//                     }, 1000)
-//                 }
-//             })
-//         }
-
-
-
-
-//     }
-//     // getProductName(index) {
-//     //     let formObj: any = <FormArray>this.poForm.get('items');
-//     //     formObj.controls[index].get('itemName').setValue('')
-//     //     this.poService.getSKUdetails(this.poForm.value.items[index].skuCode).subscribe((data) => {
-//     //         if (data.data != null) {
-//     //             formObj.controls[index].get('itemName').setValue(data.data.productName)
-//     //         }
-//     //     })
-//     // }
-
-//     addPo() {
-//         this.submitted = false;
-//         if (this.poForm.valid && this.poDate) {
-//             if (this.itemsAddStatus) {
-//                 const poObj = {
-//                     "vendorId": {
-//                         "id": this.poForm.value.poInfo.vendorName,
-//                     },
-//                     "purchaseOrderNumber": this.poForm.value.poInfo.purchageNumber,
-//                     "commercialInvoiceDate": this.poDate["jsdate"],
-//                     "comments": this.comments
-//                 }
-//                 this.addPoSubMethod(poObj)
-
-//             } else {
-//                 alert('please add item')
-//             }
-//         } else {
-//             this.submitted = true;
-//         }
-//     }

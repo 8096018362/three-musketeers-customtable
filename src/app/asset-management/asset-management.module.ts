@@ -5,7 +5,7 @@ import { AssetsResolver, BreakdownsResolver, PreventivesResolver, WorkOrdersReso
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { AssetCateoriesResolver } from './resolvers/asset-categories.resolver';
-import { AssetsComponent, AssetDialog } from './components/assets/assets.component';
+import { AssetsComponent } from './components/assets/assets.component';
 import { BreakdownsComponent, BreakdownDialog } from './components/breakdowns/breakdowns.component';
 import { PreventivesComponent, PreventiveDialog } from './components/preventives/preventives.component';
 import { WorkOrdersComponent, WorkOrderDialog } from './components/work-orders/work-orders.component';
@@ -53,7 +53,6 @@ export const routes = [
 @NgModule({
   declarations: [
     AssetsComponent,
-    AssetDialog,
     BreakdownsComponent,
     BreakdownDialog,
     PreventivesComponent,
@@ -74,9 +73,7 @@ export const routes = [
     PreventivesResolver,
     WorkOrdersResolver
   ],
-  entryComponents: [
-    AssetDialog,
-    BreakdownDialog,
+  entryComponents: [BreakdownDialog,
     WorkOrderDialog,
     PreventiveDialog
   ]
