@@ -1,5 +1,9 @@
 <div class="container-fluid content-wrapper">
 
+    <div class="row buttons-row no-gutters">
+        <button class="col-sm-6 col-md-3 col-lg-2 filters-button" type="button">Show/Hide Filter</button>
+    </div>
+
     <div class="row">
         <div class="col-sm-4">
             <div class="form-group">
@@ -15,19 +19,99 @@
 
     </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-4">
             <div class="form-group">
                 <label class="col-form-label">Multi Filters</label>
+                <mat-select multiple>
+                    <mat-option *ngFor="let a of sampleResponse.displayHeader;let i=index" [value]="a.name"
+                        (click)="addMultiFields(a)">
+                        <div>{{a.displayName}}</div>
+                    </mat-option>
+                </mat-select>
             </div>
         </div>
+        <div class="col-sm-12">
+            <form [formGroup]="poForm">
+                <div formArrayName="items" *ngFor="let item of getControls(); let i = index">
+                    <div class="row" [formGroupName]="i">
+                        <div class="col-sm-6">
+                            <div>{{poForm.value.items[i].m_displyKey}}</div>
+                            <mat-form-field appearance="fill">
+                                <mat-label> Types</mat-label>
+                                <mat-select formControlName='m_selSearchName'>
+                                    <mat-option *ngFor="let search of poForm.value.items[i].m_searchArray"
+                                        [value]="search.searchType" (click)="multiSelectedSearchType(search,i)">
+                                        {{search.searchType}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div *ngIf="poForm.value.items[i].m_selSearchName">
+                            <div class="col-sm-12"
+                                *ngIf="poForm.value.items[i].m_selSearchName!='between'&&poForm.value.items[i].m_searchFieldType!=='date'">
+                                <mat-form-field class="example-form-field" appearance="outline">
+                                    <input matInput [type]="poForm.value.items[i].m_searchFieldType"
+                                        formControlName="m_searchInputValue" placeholder="Enter here...">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-12"
+                                *ngIf="poForm.value.items[i].m_selSearchName=='between'&&poForm.value.items[i].m_searchFieldType!=='date'">
+                                <mat-form-field class="example-form-field" appearance="outline">
+                                    <mat-label>From</mat-label>
+                                    <input matInput [type]="poForm.value.items[i].m_searchFieldType"
+                                        formControlName="m_searchInputFromValue" placeholder="Enter here...">
+                                </mat-form-field>
+
+                                <mat-form-field class="example-form-field" appearance="outline">
+                                    <mat-label>To</mat-label>
+                                    <input matInput [type]="poForm.value.items[i].m_searchFieldType"
+                                        formControlName="m_searchInputToValue" placeholder="Enter here...">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-12"
+                                *ngIf="poForm.value.items[i].m_selSearchName!='between'&&poForm.value.items[i].m_searchFieldType=='date'">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Date(m/d/y)</mat-label>
+                                    <input matInput [matDatepicker]="picker" formControlName="m_wholeDate">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-12"
+                                *ngIf="poForm.value.items[i].m_selSearchName=='between'&&poForm.value.items[i].m_searchFieldType=='date'">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>From Date((m/d/y)</mat-label>
+                                    <input matInput [matDatepicker]="picker" formControlName="m_startDate">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                                <br>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>To Date((m/d/y)</mat-label>
+                                    <input matInput [matDatepicker]="picker1" formControlName="m_endDate">
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div *ngIf="getControls().length">
+                        <button mat-raised-button color="primary" (click)="fetchDataByMultiFiltered()">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+
+
     </div>
 
 
-    <div class="row buttons-row no-gutters">
-        <button class="col-sm-6 col-md-3 col-lg-2 filters-button" type="button" (click)="addColumns()">Add
-            Columns</button>
-        <button class="col-sm-6 col-md-3 col-lg-2 filters-button" type="button">Clear Filter</button>
-    </div>
+
 
     <div class="recent-orders row">
         <div class="col table-wrapper table-responsive">

@@ -147,7 +147,6 @@ export class TableComponent {
 
     multiSelectedSearchType(sObj: any, index: any) {
         this.poForm.value.items[index].m_selSearchName = sObj.searchType;
-
     }
 
 

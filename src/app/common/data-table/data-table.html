@@ -43,9 +43,7 @@
     <mat-grid-list cols="5" rowHeight="100px" formArrayName="items" *ngFor="let item of getControls(); let i = index">
         <div [formGroupName]="i">
             <mat-grid-tile>
-
                 <div>{{poForm.value.items[i].m_displyKey}}</div>
-
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill">
@@ -59,7 +57,6 @@
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
-
                 <div *ngIf="poForm.value.items[i].m_selSearchName">
                     <div
                         *ngIf="poForm.value.items[i].m_selSearchName!='between'&&poForm.value.items[i].m_searchFieldType!=='date'">
@@ -68,7 +65,6 @@
                                 formControlName="m_searchInputValue" placeholder="Enter here...">
                         </mat-form-field>
                     </div>
-
                     <div
                         *ngIf="poForm.value.items[i].m_selSearchName=='between'&&poForm.value.items[i].m_searchFieldType!=='date'">
                         <mat-form-field class="example-form-field" appearance="outline">

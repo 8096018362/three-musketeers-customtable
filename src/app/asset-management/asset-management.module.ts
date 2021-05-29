@@ -10,6 +10,8 @@ import { BreakdownsComponent, BreakdownDialog } from './components/breakdowns/br
 import { PreventivesComponent, PreventiveDialog } from './components/preventives/preventives.component';
 import { WorkOrdersComponent, WorkOrderDialog } from './components/work-orders/work-orders.component';
 import { TableComponentModule } from '../common/data-table/data-table.module';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export const routes = [
   {
@@ -65,6 +67,8 @@ export const routes = [
     SharedModule,
     DragDropModule,
     TableComponentModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
   providers: [
@@ -73,7 +77,8 @@ export const routes = [
     PreventivesResolver,
     WorkOrdersResolver
   ],
-  entryComponents: [BreakdownDialog,
+  entryComponents: [
+    BreakdownDialog,
     WorkOrderDialog,
     PreventiveDialog
   ]

@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { FormGroup, FormBuilder, FormControl, Validators, FormArray } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-assets',
@@ -15,8 +17,19 @@ export class AssetsComponent implements OnInit {
 
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
+  public poForm: FormGroup;
+
   displayedColumns = [];
   columnsToDisplay = [];
+
+
+  constructor(
+    private readonly fb: FormBuilder
+  ) {
+    this.poForm = new FormGroup({
+      'items': new FormArray([])
+    });
+  }
 
 
   ngOnInit() {
@@ -786,6 +799,226 @@ export class AssetsComponent implements OnInit {
         this.displayedColumns.push({ value: element.name, header: element.displayName })
       }
     });
+  }
+  searchArrayType1: any = [
+    {
+      searchType: 'wholeSearch'
+    },
+    {
+      searchType: 'greterthan'
+    },
+    {
+      searchType: 'greterthanorequal'
+    },
+    {
+      searchType: 'lessthan'
+    },
+    {
+      searchType: 'lessthanorequal'
+    },
+    {
+      searchType: 'between'
+    }
+  ];
+
+  searchArrayType2: any = [
+    {
+      searchType: 'wholeSearch'
+    }
+  ];
+
+  addMultiFields(obj: any) {
+    obj.searchOptions = obj.searchFieldType === 'text' ? this.searchArrayType2 : this.searchArrayType1;
+    let Aobj: any = this.poForm.get('items');
+    let checkingStatus = true;
+
+    if (Aobj.value.length) {
+      for (let i = 0; i < Aobj.value.length; i++) {
+        if (obj.displayName === this.poForm.value.items[i].m_displyKey) {
+          (this.poForm.get('items') as FormArray).removeAt(i);
+          checkingStatus = false;
+        }
+      }
+      if (checkingStatus) {
+        this.onAddItem(obj)
+      }
+    } else {
+      this.onAddItem(obj)
+    }
+  }
+
+  onAddItem(obj: any) {
+    (this.poForm.get('items') as FormArray).push(this.createItem(obj));
+  }
+  createItem(obj: any) {
+    return new FormGroup({
+      'm_searchKey': new FormControl(obj.name ? obj.name : '', Validators.required),
+      'm_displyKey': new FormControl(obj.displayName ? obj.displayName : '', Validators.required),
+      'm_selSearchName': new FormControl("wholeSearch", Validators.required),
+      'm_searchArray': new FormControl(obj.searchOptions),
+      'm_searchFieldType': new FormControl(obj.searchFieldType),
+
+      "m_searchInputValue": new FormControl(null, Validators.required),
+      "m_searchInputFromValue": new FormControl(null, Validators.required),
+      "m_searchInputToValue": new FormControl(null, Validators.required),
+      "m_wholeDate": new FormControl(null, Validators.required),
+      "m_startDate": new FormControl(null, Validators.required),
+      "m_endDate": new FormControl(null, Validators.required),
+    })
+  }
+
+  getControls() {
+    return (this.poForm.get('items') as FormArray).controls;
+  }
+
+  wholeDate: any;
+  startDate: any;
+  endDate: any;
+  multiData: any;
+  finalArray: any = [];
+  selfieldType: any = '';
+  public searchInputValue: any = '';
+  searchInputToValue: any = '';
+  searchInputFromValue: any = '';
+  fetchDataByMultiFiltered() {
+    this.multiData = this.poForm.value.items;
+    let dataSource: any = this.sampleResponse.data;
+
+    this.multiData.forEach((element: { m_searchKey: any; m_selSearchName: any; m_searchFieldType: any; m_searchInputValue: any; }) => {
+      this.finalArray = [];
+      let mainKey = element.m_searchKey;
+      let searchType = element.m_selSearchName;
+      this.selfieldType = element.m_searchFieldType;
+      this.searchInputValue = element.m_searchInputValue;
+
+      if (this.selfieldType == 'date') {
+        switch (searchType) {
+
+          case "wholeSearch":
+            dataSource.map((itm: any) => {
+              if (moment(itm[mainKey]).format('YYYY-MM-DD') == moment(this.wholeDate).format('YYYY-MM-DD')) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+
+          case 'greterthan':
+            dataSource.map((itm: any) => {
+              if (moment(itm[mainKey]).format('YYYY-MM-DD') > moment(this.wholeDate).format('YYYY-MM-DD')) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'greterthanorequal':
+            dataSource.map((itm: any) => {
+              if (moment(itm[mainKey]).format('YYYY-MM-DD') >= moment(this.wholeDate).format('YYYY-MM-DD')) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+
+          case 'lessthan':
+            dataSource.map((itm: any) => {
+              if (moment(itm[mainKey]).format('YYYY-MM-DD') < moment(this.wholeDate).format('YYYY-MM-DD')) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'lessthanorequal':
+            dataSource.map((itm: any) => {
+              if (moment(itm[mainKey]).format('YYYY-MM-DD') <= moment(this.wholeDate).format('YYYY-MM-DD')) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+
+          case 'between':
+            dataSource.map((itm: any) => {
+              if (moment(itm[mainKey]).format('YYYY-MM-DD') > moment(this.startDate).format('YYYY-MM-DD') && moment(itm[mainKey]).format('YYYY-MM-DD') < moment(this.endDate).format('YYYY-MM-DD')) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+
+        }
+
+      } else {
+        switch (searchType) {
+
+          case "wholeSearch":
+            dataSource.map((itm: any) => {
+              if (itm[mainKey] == this.searchInputValue) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'greterthan':
+            dataSource.map((itm: any) => {
+              if (itm[mainKey] > this.searchInputValue) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'greterthanorequal':
+            dataSource.map((itm: any) => {
+              if (itm[mainKey] >= this.searchInputValue) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'lessthan':
+            dataSource.map((itm: any) => {
+              if (itm[mainKey] < this.searchInputValue) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'lessthanorequal':
+            dataSource.map((itm: any) => {
+              if (itm[mainKey] <= this.searchInputValue) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+          case 'between':
+            dataSource.map((itm: any) => {
+              if (itm[mainKey] > this.searchInputFromValue && itm[mainKey] < this.searchInputToValue) {
+                this.finalArray.push(itm)
+              }
+            });
+            this.dataSet();
+            break;
+        }
+      }
+
+      dataSource = this.finalArray;
+    });
+  }
+
+
+  dataSet() {
+    setTimeout(() => {
+      this.dataSource = new MatTableDataSource<any>(this.finalArray);
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }, 500);
+    }, 2000);
+  }
+
+  multiSelectedSearchType(sObj: any, index: any) {
+    this.poForm.value.items[index].m_selSearchName = sObj.searchType;
   }
 
 }
