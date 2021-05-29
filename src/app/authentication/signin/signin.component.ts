@@ -30,7 +30,8 @@ export class SigninComponent implements OnInit {
     this.authenticationService.signin(data.email, data.password)
       .subscribe((res) => {
         // if signin success then:
-        this.router.navigate(['dashboards/asset-management']);
+        // this.router.navigate(['dashboards/asset-management']);
+        this.router.navigate(['asset-management/assets']);
       }, (err) => {
         // else if signin fails
         // show error
