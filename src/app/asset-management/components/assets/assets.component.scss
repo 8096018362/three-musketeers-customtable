@@ -42,8 +42,22 @@
       @include button-outline();
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
+      background-color: var(--button-background, rgb(var(--palette-white-rgb)));
+    border-color: var(--button-border, rgb(var(--palette-primary-rgb)));
+    border-radius: 6px;
+    border-style: solid;
+    border-width: 1px;
+    color: var(--button-color, rgb(var(--palette-primary-rgb)));
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: normal;
+    padding: 6px 12px;
+    transition: border-color 0.5s, color 0.5s, background-color 0.5s;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     }
 
+   
     .categories {
       @include chip-styles();
 
@@ -129,5 +143,14 @@
         @include table-paginator-styles();
       }
     }
+  }
+}
+
+.cBox{
+  background: white !important;
+  padding: 5px 10px !important;
+  border-radius: 4px !important;
+  .col-form-label{
+    color: #3b86ff !important;
   }
 }

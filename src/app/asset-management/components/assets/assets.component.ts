@@ -136,7 +136,7 @@ export class AssetsComponent implements OnInit {
         "make": "2018",
         "serialNumber": "546yhgt9uy2",
         "modelNumber": "h343h8743h09j",
-        "installedDate": "2019-06-02T16:59:10",
+        "installedDate": "2019-06-03T16:59:10",
         "warrantyExpiry": "2021-03-14T10:30:50",
         "isActive": true,
         "location": "india",
